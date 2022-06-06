@@ -73,9 +73,9 @@ class QueryFactory
 
 
 
-    public function build(): ActiveQuery
+    public function build($clone=true): ActiveQuery
     {
-        $query = clone $this->activeQuery;
+        $query = $clone ? clone $this->activeQuery : $this->activeQuery;
         foreach ($this->criteria as $criterion) {
             $criterion->apply($query);
         }

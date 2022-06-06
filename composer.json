@@ -1,0 +1,19 @@
+{
+    "name": "kirillemko/yii2-query-factory",
+    "description": "Query factory for Yii2",
+    "keywords": ["yii2", "query", "factory"],
+    "type": "yii2-extension",
+    "authors": [
+        {
+            "name": "Kirill Emelianenko",
+            "email": "kirill.emko@mail.ru"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": { "kirillemko\\QueryFactory\\": "src\\" }
+    }
+}

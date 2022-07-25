@@ -45,9 +45,9 @@ class QueryFactory
     {
         return $this->pagination;
     }
-    public function setPagination(Pagination $pagination=null): self
+    public function setPagination(Pagination $pagination=null, $params=[]): self
     {
-        $this->pagination = $pagination ?: Yii::$container->get(Pagination::class);
+        $this->pagination = $pagination ?: Yii::$container->get(Pagination::class, $params);
         return $this;
     }
 

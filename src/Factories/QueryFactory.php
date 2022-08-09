@@ -3,9 +3,11 @@
 namespace kirillemko\QueryFactory\Factories;
 
 use kirillemko\QueryFactory\Interfaces\CriteriaInterface;
+use kirillemko\QueryFactory\Interfaces\SortableInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\data\Pagination;
+use yii\data\Sort;
 use yii\db\ActiveQuery;
 use yii\di\Instance;
 
@@ -19,6 +21,9 @@ class QueryFactory
 
     /** @var Pagination */
     protected $pagination;
+
+    /** @var Sort */
+    protected $sort;
 
 
     /**
@@ -51,6 +56,28 @@ class QueryFactory
         return $this;
     }
 
+
+    public function getSort(): ?Pagination
+    {
+        return $this->sort;
+    }
+    public function setSort(Sort $sort=null): self
+    {
+        if( $sort ){
+            $this->sort = $sort;
+            return $this;
+        }
+
+        // Check for SearchableInterface
+        if( ! isset(class_implements($this->activeQuery->modelClass)[SortableInterface::class]) ){
+            return $this;
+        }
+        $sortParams = call_user_func($this->activeQuery->modelClass .'::sortParams');
+        $sortParams['class'] = $sortParams['class'] ?? Sort::class;
+        $this->sort = Yii::createObject($sortParams);
+
+        return $this;
+    }
 
 
 
@@ -85,6 +112,9 @@ class QueryFactory
             $this->pagination->totalCount = $query->count();
             $query->offset($this->pagination->offset);
             $query->limit($this->pagination->limit);
+        }
+        if( $this->sort ){
+            $query->orderBy($this->sort->orders);
         }
 
         return $query;

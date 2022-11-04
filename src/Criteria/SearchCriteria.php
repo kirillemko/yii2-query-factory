@@ -61,6 +61,15 @@ class SearchCriteria implements CriteriaInterface
                     $query->joinWith($settings['relation']);
                 }
 
+                if( isset($settings['type']) ){
+                    switch( $settings['type'] ){
+                        case 'number':
+                            if( !is_numeric( $word ) ){
+                                continue 2;
+                            }
+                    }
+                }
+
                 $wordConditions[] = [$condition, $fieldName, $word];
             }
             $searchConditions[] = $wordConditions;

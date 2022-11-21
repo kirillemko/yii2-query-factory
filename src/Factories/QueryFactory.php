@@ -57,7 +57,7 @@ class QueryFactory
     }
 
 
-    public function getSort(): ?Pagination
+    public function getSort(): ?Sort
     {
         return $this->sort;
     }
@@ -76,7 +76,27 @@ class QueryFactory
         $sortParams['class'] = $sortParams['class'] ?? Sort::class;
         $this->sort = Yii::createObject($sortParams);
 
+        $this->loadSortAttributesRelations();
+
         return $this;
+    }
+
+    private function loadSortAttributesRelations(): void
+    {
+        $attributes = $this->sort->getAttributeOrders();
+        foreach ($attributes as $attribute => $order) {
+            $lastPointPos = strrpos($attribute, '.');
+            if( $lastPointPos === false ){ // no relations found
+                continue;
+            }
+            $relationName = substr($attribute, 0, $lastPointPos);
+            $this->activeQuery->joinWith($relationName);
+
+            // PSql group_by issue fix
+            if($this->activeQuery->groupBy){
+                $this->activeQuery->addGroupBy($attribute);
+            }
+        }
     }
 
 

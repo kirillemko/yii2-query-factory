@@ -45,17 +45,25 @@ class SearchCriteria implements CriteriaInterface
         }
 
         $classSearchFields = call_user_func($query->modelClass .'::searchFields');
+        static::fillQueryWithConditionsFromString($query, $this->searchString, $classSearchFields);
+
+        return $query;
+    }
 
 
+
+
+    public static function fillQueryWithConditionsFromString(ActiveQuery $query, string $searchString, $searchFields): ActiveQuery
+    {
         $searchConditions = ['AND'];
-        foreach (explode(' ', $this->searchString) as $word) {
+        foreach (explode(' ', $searchString) as $word) {
             $wordConditions = ['OR'];
-            foreach ($classSearchFields as $fieldName => $settings) {
+            foreach ($searchFields as $fieldName => $settings) {
                 if( is_numeric($fieldName) ){
                     $fieldName = $settings;
                     $settings = [];
                 }
-                $condition = $settings['condition'] ?? $this->likeCondition();
+                $condition = $settings['condition'] ?? static::likeCondition();
 
                 if( isset($settings['relation']) ){
                     $query->joinWith($settings['relation']);
@@ -74,14 +82,12 @@ class SearchCriteria implements CriteriaInterface
             }
             $searchConditions[] = $wordConditions;
         }
+
         $query->andWhere($searchConditions);
-
-
         return $query;
     }
 
-
-    protected function likeCondition(): string
+    protected static function likeCondition(): string
     {
         return \Yii::$app->db->driverName === 'pgsql' ? 'ilike' : 'like';
     }

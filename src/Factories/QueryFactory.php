@@ -50,9 +50,9 @@ class QueryFactory
     {
         return $this->pagination;
     }
-    public function setPagination(Pagination $pagination=null, $params=[]): self
+    public function setPagination(Pagination $pagination=null, $params=[], $config=[]): self
     {
-        $this->pagination = $pagination ?: Yii::$container->get(Pagination::class, $params);
+        $this->pagination = $pagination ?: Yii::$container->get(Pagination::class, $params, $config);
         return $this;
     }
 

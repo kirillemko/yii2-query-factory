@@ -133,7 +133,14 @@ class QueryFactory
             $query->offset($this->pagination->offset);
             $query->limit($this->pagination->limit);
         }
+
         if( $this->sort ){
+            // При distinct нужно, чтобы сортируемые колонки входили в селект
+            if( $query->distinct ){
+                foreach ($this->sort->orders as $orderKey => $orderDirection) {
+                    $query->addSelect($orderKey);
+                }
+            }
             $query->orderBy($this->sort->orders);
         }
 

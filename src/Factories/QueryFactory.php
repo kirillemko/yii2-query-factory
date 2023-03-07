@@ -90,6 +90,10 @@ class QueryFactory
                 continue;
             }
             $relationName = substr($attribute, 0, $lastPointPos);
+            $relationAlias = explode(' ', $attribute)[1] ?? null;
+            if( $relationAlias ){
+                $relationName .= ' ' . $relationAlias;
+            }
             $this->activeQuery->joinWith($relationName);
 
             // PSql group_by issue fix

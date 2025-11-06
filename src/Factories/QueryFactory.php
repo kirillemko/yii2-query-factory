@@ -145,7 +145,7 @@ class QueryFactory
                     $query->addSelect($orderKey);
                 }
             }
-            $query->orderBy($this->sort->orders);
+            $query->addOrderBy($this->sort->orders);
         }
 
         return $query;

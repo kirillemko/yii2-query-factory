@@ -117,7 +117,7 @@ class QueryFactory
             if( !is_array($sortJoin) ){
                 continue;
             }
-            if( count($sortJoins) !== 3 ){
+            if( count($sortJoin) !== 3 ){
                 continue;
             }
             $this->activeQuery->join(...$sortJoin);

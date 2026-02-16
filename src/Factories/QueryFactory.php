@@ -73,6 +73,11 @@ class QueryFactory
             return $this;
         }
         $sortParams = call_user_func($this->activeQuery->modelClass .'::sortParams');
+
+        $sortJoins = $sortParams['joins'] ?? [];
+        $this->loadJoins($sortJoins);
+        unset($sortParams['joins']);
+
         $sortParams['class'] = $sortParams['class'] ?? Sort::class;
         $this->sort = Yii::createObject($sortParams);
 
@@ -101,6 +106,23 @@ class QueryFactory
                 $this->activeQuery->addGroupBy($attribute);
             }
         }
+    }
+
+    private function loadJoins($sortJoins)
+    {
+        if( !$sortJoins ){
+            return;
+        }
+        foreach ($sortJoins as $sortJoin) {
+            if( !is_array($sortJoin) ){
+                continue;
+            }
+            if( count($sortJoins) !== 3 ){
+                continue;
+            }
+            $this->activeQuery->join(...$sortJoin);
+        }
+
     }
 
 
